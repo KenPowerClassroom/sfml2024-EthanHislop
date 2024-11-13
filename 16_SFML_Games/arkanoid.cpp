@@ -5,7 +5,7 @@ using namespace sf;
 // Const variables
 const int SCREEN_WIDTH = 520;
 const int SCREEN_HEIGHT = 450;
-const int BLOCK_NUM = 1000;
+const int BLOCK_NUM = 100;
 
 class Block
 {
@@ -26,7 +26,8 @@ public:
         bool blockCollCheck = FloatRect(t_ballX + 3, t_ballY + 3, 6, 6).intersects(blockSprite.getGlobalBounds());
         if (blockCollCheck)
         {
-            blockSprite.setPosition(-100, 0); t_ballSpeed = -t_ballSpeed;
+            blockSprite.setPosition(-100, 0); 
+            t_ballSpeed = -t_ballSpeed;
         }
 
         return t_ballSpeed;
@@ -94,15 +95,21 @@ int arkanoid()
             app.close();
         }
 
-        // Move ball along x axis by dx
+        // Move ball along x axis by x speed
         ballX += ballXSpeed;
         // Check if ball is intersecting a block and reverse x direction
-        ballXSpeed = block->checkBlockCollision(ballXSpeed, ballX, ballY);
+        for (int i = 0; i < BLOCK_NUM; i++)
+        {
+            ballXSpeed = block[i].checkBlockCollision(ballXSpeed, ballX, ballY);
+        }
 
-        // Move ball along y axis by dy
+        // Move ball along y axis by y speed
         ballY += ballYSpeed;
         // Check if ball is intersecting a block and reverse y direction
-        ballYSpeed = block->checkBlockCollision(ballYSpeed, ballX, ballY);
+        for (int i = 0; i < BLOCK_NUM; i++)
+        {
+            ballYSpeed = block[i].checkBlockCollision(ballYSpeed, ballX, ballY);
+        }
 
         // If ball leaves bounds, reverse direction to keep in
         if (ballX < 0 || ballX > SCREEN_WIDTH)  ballXSpeed = -ballXSpeed;
@@ -131,7 +138,6 @@ int arkanoid()
         {
             app.draw(block[i].getBody());
         }
-
         app.display();
     }
 
