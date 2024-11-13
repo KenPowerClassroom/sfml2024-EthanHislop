@@ -42,58 +42,72 @@ int arkanoid()
       }
 
     // Speed of ball in x and y direction
-    float ballXSpeed = 2, ballYSpeed = 2;
+    float ballXSpeed = 6, ballYSpeed = 5;
     // Position of the ball
     float ballX = 300, ballY = 300;
 
     // Game loop
     while (app.isOpen())
     {
-       Event e;
-       // Close window function
-       while (app.pollEvent(e))
-       {
-         if (e.type == Event::Closed)
-             app.close();
-       }
+        Event e;
+        // Close window function
+        while (app.pollEvent(e))
+        {
+            if (e.type == Event::Closed)
+            app.close();
+        }
 
-    // Move ball along x axis by dx
-    ballX += ballXSpeed;
-    // Check if ball is intersecting a block and reverse x direction
-    for (int i = 0; i < blockIndex; i++)
-        if ( FloatRect(ballX + 3, ballY + 3, 6, 6).intersects(block[i].getGlobalBounds()) ) 
-             {block[i].setPosition(-100, 0); ballXSpeed = -ballXSpeed;}
+        // Move ball along x axis by dx
+        ballX += ballXSpeed;
+        // Check if ball is intersecting a block and reverse x direction
+        for (int i = 0; i < blockIndex; i++)
+        {
+            bool blockCollCheck = FloatRect(ballX + 3, ballY + 3, 6, 6).intersects(block[i].getGlobalBounds());
+            if (blockCollCheck)
+            {
+                block[i].setPosition(-100, 0); ballXSpeed = -ballXSpeed;
+            }
+        }
 
-    // Move ball along y axis by dy
-    ballY += ballYSpeed;
-    // Check if ball is intersecting a block and reverse y direction
-    for (int i = 0; i < blockIndex; i++)
-        if ( FloatRect(ballX + 3, ballY + 3, 6, 6).intersects(block[i].getGlobalBounds()) ) 
-             {block[i].setPosition(-100, 0); ballYSpeed = -ballYSpeed;}
+        // Move ball along y axis by dy
+        ballY += ballYSpeed;
+        // Check if ball is intersecting a block and reverse y direction
+        for (int i = 0; i < blockIndex; i++)
+        {
+            bool blockCollCheck = FloatRect(ballX + 3, ballY + 3, 6, 6).intersects(block[i].getGlobalBounds());
+            if (blockCollCheck)
+            {
+                block[i].setPosition(-100, 0); ballYSpeed = -ballYSpeed;
+            }
+        }
 
-    // If ball leaves bounds, reverse direction to keep in
-    if (ballX < 0 || ballX > SCREEN_WIDTH)  ballXSpeed = -ballXSpeed;
-    if (ballY < 0 || ballY > SCREEN_HEIGHT)  ballYSpeed = -ballYSpeed;
+        // If ball leaves bounds, reverse direction to keep in
+        if (ballX < 0 || ballX > SCREEN_WIDTH)  ballXSpeed = -ballXSpeed;
+        if (ballY < 0 || ballY > SCREEN_HEIGHT)  ballYSpeed = -ballYSpeed;
 
-    // Move paddle controls
-    if (Keyboard::isKeyPressed(Keyboard::Right)) sPaddle.move(6, 0);
-    if (Keyboard::isKeyPressed(Keyboard::Left)) sPaddle.move(-6, 0);
+        // Move paddle controls
+        if (Keyboard::isKeyPressed(Keyboard::Right)) sPaddle.move(6, 0);
+        if (Keyboard::isKeyPressed(Keyboard::Left)) sPaddle.move(-6, 0);
 
-    // If ball hits the paddle, move up in y axis by a random speed
-    if ( FloatRect(ballX, ballY, 12, 12).intersects(sPaddle.getGlobalBounds()) ) ballYSpeed = -(rand() % 5 + 2);
+        // If ball hits the paddle, move up in y axis by a random speed
+        bool paddleCollCheck = FloatRect(ballX, ballY, 12, 12).intersects(sPaddle.getGlobalBounds());
+        if (paddleCollCheck)
+        {
+            ballYSpeed = -(rand() % 5 + 2);
+        }
 
-    // Update ball position
-    sBall.setPosition(ballX, ballY);
+        // Update ball position
+        sBall.setPosition(ballX, ballY);
 
-    // Draw objects
-    app.clear();
-    app.draw(sBackground);
-    app.draw(sBall);
-    app.draw(sPaddle);
-    for (int i = 0; i < blockIndex; i++)
-     app.draw(block[i]);
+        // Draw objects
+        app.clear();
+        app.draw(sBackground);
+        app.draw(sBall);
+        app.draw(sPaddle);
+        for (int i = 0; i < blockIndex; i++)
+        app.draw(block[i]);
 
-    app.display();
+        app.display();
     }
 
   return 0;
