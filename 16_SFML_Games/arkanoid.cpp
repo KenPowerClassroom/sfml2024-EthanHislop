@@ -2,6 +2,20 @@
 #include <time.h>
 using namespace sf;
 
+float checkBlockCollision(Sprite t_block[], int t_blockIndex, float t_ballSpeed, float t_ballX, float t_ballY)
+{
+    for (int i = 0; i < t_blockIndex; i++)
+    {
+        bool blockCollCheck = FloatRect(t_ballX + 3, t_ballY + 3, 6, 6).intersects(t_block[i].getGlobalBounds());
+        if (blockCollCheck)
+        {
+            t_block[i].setPosition(-100, 0); t_ballSpeed = -t_ballSpeed;
+        }
+    }
+
+    return t_ballSpeed;
+}
+
 int arkanoid()
 {
     // Randomizer seed
@@ -33,11 +47,11 @@ int arkanoid()
 
     // Loop to set up blocks in their positions
     int blockIndex = 0;
-    for (int i = 1; i <= 10; i++)
-    for (int j = 1; j <= 10; j++)
+    for (int row = 1; row <= 10; row++)
+    for (int column = 1; column <= 10; column++)
       {
          block[blockIndex].setTexture(blockTexture);
-         block[blockIndex].setPosition(i * block->getGlobalBounds().width, j * block->getGlobalBounds().height);
+         block[blockIndex].setPosition(row * block->getGlobalBounds().width, column * block->getGlobalBounds().height);
          blockIndex++;
       }
 
@@ -49,37 +63,23 @@ int arkanoid()
     // Game loop
     while (app.isOpen())
     {
-        Event e;
+        Event event;
         // Close window function
-        while (app.pollEvent(e))
+        while (app.pollEvent(event))
         {
-            if (e.type == Event::Closed)
+            if (event.type == Event::Closed)
             app.close();
         }
 
         // Move ball along x axis by dx
         ballX += ballXSpeed;
         // Check if ball is intersecting a block and reverse x direction
-        for (int i = 0; i < blockIndex; i++)
-        {
-            bool blockCollCheck = FloatRect(ballX + 3, ballY + 3, 6, 6).intersects(block[i].getGlobalBounds());
-            if (blockCollCheck)
-            {
-                block[i].setPosition(-100, 0); ballXSpeed = -ballXSpeed;
-            }
-        }
+        ballXSpeed = checkBlockCollision(block, blockIndex, ballXSpeed, ballX, ballY);
 
         // Move ball along y axis by dy
         ballY += ballYSpeed;
         // Check if ball is intersecting a block and reverse y direction
-        for (int i = 0; i < blockIndex; i++)
-        {
-            bool blockCollCheck = FloatRect(ballX + 3, ballY + 3, 6, 6).intersects(block[i].getGlobalBounds());
-            if (blockCollCheck)
-            {
-                block[i].setPosition(-100, 0); ballYSpeed = -ballYSpeed;
-            }
-        }
+        ballYSpeed = checkBlockCollision(block, blockIndex, ballYSpeed, ballX, ballY);
 
         // If ball leaves bounds, reverse direction to keep in
         if (ballX < 0 || ballX > SCREEN_WIDTH)  ballXSpeed = -ballXSpeed;
