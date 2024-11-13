@@ -5,7 +5,10 @@ using namespace sf;
 // Const variables
 const int SCREEN_WIDTH = 520;
 const int SCREEN_HEIGHT = 450;
+
 const int BLOCK_NUM = 100;
+const int NUM_ROWS = 10;
+const int NUM_COLUMNS = 10;
 
 class Block
 {
@@ -72,8 +75,8 @@ int arkanoid()
 
     // Loop to set up blocks in their positions
     int currentBlockIndex = 0;
-    for (int row = 1; row <= 10; row++)
-    for (int column = 1; column <= 10; column++)
+    for (int row = 1; row <= NUM_ROWS; row++)
+    for (int column = 1; column <= NUM_COLUMNS; column++)
     {
         block[currentBlockIndex].setBlockPosition(row * block[currentBlockIndex].getBody().getGlobalBounds().width, column * block[currentBlockIndex].getBody().getGlobalBounds().height);
         currentBlockIndex++;
