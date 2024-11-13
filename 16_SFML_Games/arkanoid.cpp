@@ -2,37 +2,62 @@
 #include <time.h>
 using namespace sf;
 
-float checkBlockCollision(Sprite t_block[], int t_blockIndex, float t_ballSpeed, float t_ballX, float t_ballY)
+// Const variables
+const int SCREEN_WIDTH = 520;
+const int SCREEN_HEIGHT = 450;
+const int BLOCK_NUM = 1000;
+
+class Block
 {
-    for (int i = 0; i < t_blockIndex; i++)
+public:
+    Block()
     {
-        bool blockCollCheck = FloatRect(t_ballX + 3, t_ballY + 3, 6, 6).intersects(t_block[i].getGlobalBounds());
-        if (blockCollCheck)
-        {
-            t_block[i].setPosition(-100, 0); t_ballSpeed = -t_ballSpeed;
-        }
+        loadContent();
     }
 
-    return t_ballSpeed;
-}
+    void loadContent()
+    {
+        blockTexture.loadFromFile("images/arkanoid/block01.png");
+        blockSprite.setTexture(blockTexture);
+    }
+
+    float checkBlockCollision(float t_ballSpeed, float t_ballX, float t_ballY)
+    {
+        bool blockCollCheck = FloatRect(t_ballX + 3, t_ballY + 3, 6, 6).intersects(blockSprite.getGlobalBounds());
+        if (blockCollCheck)
+        {
+            blockSprite.setPosition(-100, 0); t_ballSpeed = -t_ballSpeed;
+        }
+
+        return t_ballSpeed;
+    }
+
+    void setBlockPosition(float x, float y)
+    {
+        blockSprite.setPosition(x, y);
+    }
+
+    Sprite getBody()
+    {
+        return blockSprite;
+    }
+
+private:
+    Sprite blockSprite;
+    Texture blockTexture;
+};
 
 int arkanoid()
 {
     // Randomizer seed
     srand(time(0));
 
-    // Const variables
-    const int SCREEN_WIDTH = 520;
-    const int SCREEN_HEIGHT = 450;
-    const int BLOCK_NUM = 1000;
-
     // Set up game window
     RenderWindow app(VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Arkanoid!");
     app.setFramerateLimit(60);
 
     // Create the textures for the game objects
-    Texture blockTexture, backgroundTexture, ballTexture, paddleTexture;
-    blockTexture.loadFromFile("images/arkanoid/block01.png");
+    Texture backgroundTexture, ballTexture, paddleTexture;
     backgroundTexture.loadFromFile("images/arkanoid/background.jpg");
     ballTexture.loadFromFile("images/arkanoid/ball.png");
     paddleTexture.loadFromFile("images/arkanoid/paddle.png");
@@ -42,18 +67,16 @@ int arkanoid()
     // Set the initial paddle position
     sPaddle.setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 10);
 
-    // Create this ammount of blocks for the game
-    Sprite block[BLOCK_NUM];
+    Block block[BLOCK_NUM];
 
     // Loop to set up blocks in their positions
-    int blockIndex = 0;
+    int currentBlockIndex = 0;
     for (int row = 1; row <= 10; row++)
     for (int column = 1; column <= 10; column++)
-      {
-         block[blockIndex].setTexture(blockTexture);
-         block[blockIndex].setPosition(row * block->getGlobalBounds().width, column * block->getGlobalBounds().height);
-         blockIndex++;
-      }
+    {
+        block[currentBlockIndex].setBlockPosition(row * block[currentBlockIndex].getBody().getGlobalBounds().width, column * block[currentBlockIndex].getBody().getGlobalBounds().height);
+        currentBlockIndex++;
+    }
 
     // Speed of ball in x and y direction
     float ballXSpeed = 6, ballYSpeed = 5;
@@ -74,12 +97,12 @@ int arkanoid()
         // Move ball along x axis by dx
         ballX += ballXSpeed;
         // Check if ball is intersecting a block and reverse x direction
-        ballXSpeed = checkBlockCollision(block, blockIndex, ballXSpeed, ballX, ballY);
+        ballXSpeed = block->checkBlockCollision(ballXSpeed, ballX, ballY);
 
         // Move ball along y axis by dy
         ballY += ballYSpeed;
         // Check if ball is intersecting a block and reverse y direction
-        ballYSpeed = checkBlockCollision(block, blockIndex, ballYSpeed, ballX, ballY);
+        ballYSpeed = block->checkBlockCollision(ballYSpeed, ballX, ballY);
 
         // If ball leaves bounds, reverse direction to keep in
         if (ballX < 0 || ballX > SCREEN_WIDTH)  ballXSpeed = -ballXSpeed;
@@ -104,8 +127,10 @@ int arkanoid()
         app.draw(sBackground);
         app.draw(sBall);
         app.draw(sPaddle);
-        for (int i = 0; i < blockIndex; i++)
-        app.draw(block[i]);
+        for (int i = 0; i < BLOCK_NUM; i++)
+        {
+            app.draw(block[i].getBody());
+        }
 
         app.display();
     }
