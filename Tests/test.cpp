@@ -14,8 +14,12 @@
 
 #include "../16_SFML_Games/Block.h"
 
-
 TEST(Block, SetBlockPos) {
 
 	Block block;
+
+	block.setBlockPosition(10, 10);
+
+	EXPECT_EQ(block.getBody().getPosition().x, 10);
+	EXPECT_EQ(block.getBody().getPosition().y, 10);
 }
