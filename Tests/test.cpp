@@ -1,8 +1,16 @@
 #include "pch.h"
+#define SFML_STATIC
 
-const int HEIGHT = 25;
-const int WIDTH = 40;
-const int tileSize = 18;
+#pragma comment(lib,"sfml-graphics-s-d.lib")
+#pragma comment(lib,"sfml-audio-s-d.lib")
+#pragma comment(lib,"sfml-system-s-d.lib")
+#pragma comment(lib,"sfml-window-s-d.lib")
+#pragma comment(lib,"sfml-network-s-d.lib")
+
+#pragma comment(lib,"opengl32.lib")
+#pragma comment(lib,"glu32.lib")
+#pragma comment(lib,"winmm.lib")
+#pragma comment(lib,"freetype.lib")
 
 #include "../16_SFML_Games/Block.h"
 
