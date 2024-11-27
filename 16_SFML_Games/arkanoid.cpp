@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <time.h>
+#include "Block.h"
 using namespace sf;
 
 // Const variables
@@ -9,47 +10,6 @@ const int SCREEN_HEIGHT = 450;
 const int BLOCK_NUM = 100;
 const int NUM_ROWS = 10;
 const int NUM_COLUMNS = 10;
-
-class Block
-{
-public:
-    Block()
-    {
-        loadContent();
-    }
-
-    void loadContent()
-    {
-        blockTexture.loadFromFile("images/arkanoid/block01.png");
-        blockSprite.setTexture(blockTexture);
-    }
-
-    float checkBlockCollision(float t_ballSpeed, float t_ballX, float t_ballY)
-    {
-        bool blockCollCheck = FloatRect(t_ballX + 3, t_ballY + 3, 6, 6).intersects(blockSprite.getGlobalBounds());
-        if (blockCollCheck)
-        {
-            blockSprite.setPosition(-100, 0); 
-            t_ballSpeed = -t_ballSpeed;
-        }
-
-        return t_ballSpeed;
-    }
-
-    void setBlockPosition(float x, float y)
-    {
-        blockSprite.setPosition(x, y);
-    }
-
-    Sprite getBody()
-    {
-        return blockSprite;
-    }
-
-private:
-    Sprite blockSprite;
-    Texture blockTexture;
-};
 
 int arkanoid()
 {

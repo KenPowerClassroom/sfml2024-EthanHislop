@@ -80,6 +80,7 @@
     <ClCompile Include="arkanoid.cpp" />
     <ClCompile Include="asteroids.cpp" />
     <ClCompile Include="bejeweled.cpp" />
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="chess.cpp" />
     <ClCompile Include="doodle_jump.cpp" />
     <ClCompile Include="fifteen_puzzle.cpp" />
@@ -94,6 +95,7 @@
     <ClCompile Include="xonix.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Connector.hpp" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Player.h" />
